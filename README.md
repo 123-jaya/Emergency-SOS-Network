@@ -30,9 +30,13 @@ Visualization	Real-time map & notifications on the console
 📊 Example Output
 
 [EmergencyMapAgent] 🚨 Emergency reported at coordinates [12.9716, 77.5946].
+
 [PriorityTaggingAgent] 🔥 Critical: Fire reported at location X.
+
 [AlertAgent] ⚠️ New alert! Sending help to location X.
+
 [DashboardAgent] 🗺️ Displaying live emergency updates on the map.
+
 [NotificationAgent] 📲 Emergency alert: Immediate response needed for fire at location X.
 
 📂 Dataset
