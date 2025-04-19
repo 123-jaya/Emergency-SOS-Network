@@ -1,4 +1,5 @@
-Emergency SOS Network
+**Emergency SOS Network**
+
 The Emergency SOS Network is a real-time disaster management system designed to streamline emergency response efforts. Whether it's a natural disaster, accident, or other crises, our platform helps responders stay updated with live tracking, incident prioritization, and automated alerts, ensuring that no emergency goes unnoticed.
 
 Features
