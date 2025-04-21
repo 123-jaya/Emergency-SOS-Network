@@ -7,7 +7,6 @@ import base64
 import matplotlib.pyplot as plt
 import os
 import webbrowser
-import threading
 
 app = Flask(__name__)
 geolocator = Nominatim(user_agent="sos_app")
@@ -219,4 +218,4 @@ def open_browser():
 
 if __name__ == '__main__':
     save_map()
-    print("app ready to serve via gunicron..")
+    print("app ready to serve via gunicorn..")
