@@ -1,5 +1,4 @@
 Flask
 geopy
 speechrecognition
-pyaudio
 werkzeug==2.3.0
