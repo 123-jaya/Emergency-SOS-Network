@@ -1,10 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Emergency SOS Network</title>
+    <title>SOS Rescue Network</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('/static/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .container {
+            background-color: rgba(0,0,0,0.8);
+            padding: 20px;
+            margin: 40px auto;
+            border-radius: 12px;
+            max-width: 900px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        iframe {
+            width: 100%;
+            height: 450px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 0 12px rgba(0,0,0,0.3);
+        }
+        img {
+            display: block;
+            margin: 15px auto;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        .form-section, .message, .history, .contacts {
+            text-align: center;
+            margin-top: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 15px;
+            margin: 5px;
+            border-radius: 6px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+            background-color: #2ecc71;
+            color: black;
+        }
+        .clear-button {
+            background-color: crimson;
+            color: white;
+            margin-top: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 5px auto;
+            padding: 10px;
+            border-radius: 6px;
+            max-width: 600px;
+            transition: background-color 0.2s ease;
+        }
+        li:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Emergency SOS Network</h1>
-    <p>This is your working Flask app on Render 🎉</p>
+<div class="container">
+    <h1>🌐 SOS Rescue Network</h1>
+
+    <div class="form-section">
+        <form method="POST" action="/">
+            <select name="emergency_type">
+                <option>Medical</option>
+                <option>Fire</option>
+                <option>Flood</option>
+                <option>Earthquake</option>
+                <option>Accident</option>
+                <option>Other</option>
+            </select>
+            <input name="location" placeholder="Enter City or Place" required>
+            <button type="submit">🚨 Trigger Emergency</button>
+        </form>
+    </div>
+
+    {% if message %}
+    <div class="message">
+        <p><strong>{{ message }}</strong></p>
+    </div>
+    {% endif %}
+
+    {% if emergencies %}
+    <div class="history">
+        <h2>📍 Emergency Reports</h2>
+        <ul>
+        {% for e in emergencies %}
+            <li>🔴 {{ e.type }} at {{ e.location }} (Lat: {{ e.lat }}, Lon: {{ e.lon }})</li>
+        {% endfor %}
+        </ul>
+        <form method="POST" action="/clear">
+            <button class="clear-button">🧹 Clear Notifications</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <h2>🗺️ Emergency Locations Map</h2>
+    <iframe src="/map"></iframe>
+
+    {% if chart %}
+    <h2>📊 Emergency Types Distribution</h2>
+    <img src="data:image/png;base64,{{ chart }}" alt="Pie Chart"/>
+    {% endif %}
+
+    <div class="contacts">
+        <h2>📞 Emergency Contacts</h2>
+        <p>🚒 Fire: 101</p>
+        <p>🚑 Ambulance: 102</p>
+        <p>🚓 Police: 100</p>
+        <p>🌊 Flood Helpline: 1070</p>
+    </div>
+</div>
 </body>
 </html>
