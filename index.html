@@ -1,36 +1,10 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>SOS Rescue Network</title>
-    <style>
-        body {
-            background-image: url('/static/background.jpg');
-            background-size: cover;
-            background-position: center;
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-        }
-        .container {
-            margin-top: 100px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-    </style>
+    <title>Emergency SOS Network</title>
 </head>
 <body>
-    <div class="container">
-        <h1>🚨 SOS Rescue Network</h1>
-        <h2>Live Emergency Reports</h2>
-        <ul>
-            {% for e in emergencies %}
-                <li><strong>{{ e.type }}</strong> at {{ e.location }} - Priority: {{ e.priority }} ({{ e.timestamp }})</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <h1>Welcome to the Emergency SOS Network</h1>
+    <p>This is your working Flask app on Render 🎉</p>
 </body>
 </html>
