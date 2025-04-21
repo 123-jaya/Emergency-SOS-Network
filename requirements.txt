@@ -12,6 +12,7 @@ requests==2.28.1
 Flask-Session==0.4.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.1
-flask-cors==3.1.1
+flask-cors==5.0.1
+
 
 # Add other required dependencies here
