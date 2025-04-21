@@ -1,4 +1,5 @@
-flask
-folium
-matplotlib
-geopy
+Flask==2.0.2
+folium==0.12.1
+geopy==2.2.0
+matplotlib==3.4.3
+gunicorn==20.1.0
