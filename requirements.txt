@@ -5,4 +5,5 @@ MarkupSafe==3.0.2
 geopy==2.4.1
 Werkzeug==2.3.0
 folium==0.14.0
+matplotlib==3.7.1
 # Add other required dependencies here
