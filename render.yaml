@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: Emergency-SOS-Network
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
