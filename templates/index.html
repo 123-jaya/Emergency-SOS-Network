@@ -3,53 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOS Emergency Map</title>
+    <title>SOS Emergency Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/soft-flare.png');
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+        .container {
+            padding: 20px;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #2980b9;
+        }
+        .emergencies-list {
+            margin-top: 30px;
+        }
+        .emergency-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .emergency-item p {
+            margin: 0;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .message {
+            font-size: 18px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .emergency-type {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>SOS Emergency Trigger</h1>
 
-    <!-- Emergency Form -->
+<div class="header">
+    <h1>SOS Emergency Network</h1>
+</div>
+
+<div class="container">
+    <h2>Report Emergency</h2>
     <form method="POST">
-        <label for="emergency_type">Emergency Type:</label>
-        <select name="emergency_type" required>
-            <option value="Fire">Fire</option>
-            <option value="Accident">Accident</option>
-            <option value="Medical">Medical</option>
-            <option value="Flood">Flood</option>
-        </select><br><br>
-        
-        <label for="location">Location:</label>
-        <input type="text" name="location" required><br><br>
-        
-        <button type="submit">Trigger Emergency</button>
+        <div class="form-group">
+            <label for="emergency_type">Emergency Type:</label>
+            <select id="emergency_type" name="emergency_type" required>
+                <option value="Fire">🔥 Fire</option>
+                <option value="Medical">🚑 Medical</option>
+                <option value="Police">👮‍♂️ Police</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="Enter location (e.g. City, Address)" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Report Emergency</button>
+        </div>
     </form>
 
-    <!-- Message after form submission -->
-    {% if message %}
-    <p>{{ message }}</p>
-    {% endif %}
+    <p class="message">{{ message }}</p>
 
-    <!-- Pie chart of emergencies -->
-    {% if chart %}
-    <h3>Emergency Type Distribution</h3>
-    <img src="data:image/png;base64,{{ chart }}" alt="Emergency Distribution Chart">
-    {% endif %}
-
-    <!-- Display the map directly -->
-    <h3>Emergency Map</h3>
-    <iframe src="/static/map.html" width="100%" height="600px"></iframe>
-
-    <!-- List of all emergencies -->
-    <h3>Emergency List</h3>
-    <ul>
-        {% for emergency in emergencies %}
-        <li>{{ emergency['type'] }} at {{ emergency['location'] }} ({{ emergency['lat'] }}, {{ emergency['lon'] }})</li>
+    <div class="emergencies-list">
+        <h3>Emergencies Reported</h3>
+        {% for e in emergencies %}
+        <div class="emergency-item">
+            <div>
+                <p><strong>{{ e.type }}</strong></p>
+                <p>{{ e.location }}</p>
+            </div>
+            <div>
+                <p><strong>Lat:</strong> {{ e.lat }} <strong>Lon:</strong> {{ e.lon }}</p>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 
-    <!-- Clear all emergencies -->
-    <form action="/clear" method="POST">
+    <div class="emergencies-chart">
+        <h3>Emergency Type Distribution</h3>
+        {% if chart %}
+        <img src="data:image/png;base64,{{ chart }}" alt="Emergency Chart">
+        {% else %}
+        <p>No emergencies reported yet.</p>
+        {% endif %}
+    </div>
+
+    <div>
+        <a href="/map" target="_blank">View Map of Emergencies</a>
+    </div>
+
+    <form method="POST" action="/clear">
         <button type="submit">Clear All Emergencies</button>
     </form>
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 SOS Emergency Network</p>
+</div>
+
 </body>
 </html>
