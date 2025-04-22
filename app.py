@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import os
 import webbrowser
 import threading
+import time
 
 app = Flask(__name__)
 geolocator = Nominatim(user_agent="sos_app")
@@ -158,6 +159,21 @@ html_template = '''
 </html>
 '''
 
+def geocode_location(location, retries=3, delay=2):
+    """
+    Attempts to geocode a location. Retries a few times before failing.
+    """
+    for attempt in range(retries):
+        try:
+            loc = geolocator.geocode(location)
+            if loc:
+                return loc
+            else:
+                time.sleep(delay)
+        except Exception as e:
+            time.sleep(delay)
+    return None
+
 def save_map():
     m = folium.Map(location=[20.5937, 78.9629], zoom_start=5)
     cluster = MarkerCluster().add_to(m)
@@ -191,7 +207,7 @@ def index():
     if request.method == 'POST':
         e_type = request.form['emergency_type']
         location = request.form['location']
-        loc = geolocator.geocode(location)
+        loc = geocode_location(location)
         if loc:
             emergencies.append({
                 "type": e_type,
@@ -202,7 +218,7 @@ def index():
             save_map()
             message = f"✅ Emergency '{e_type}' triggered at {location}"
         else:
-            message = f"❌ Location '{location}' not found. Try again."
+            message = f"❌ Location '{location}' not found. Please try again."
 
     chart = generate_chart()
     return render_template_string(html_template, emergencies=emergencies, chart=chart, message=message)
@@ -222,4 +238,4 @@ def open_browser():
 
 if __name__ == '__main__':
     save_map()
-    print("app ready to serve via gunicorn..")
+    print("App ready to serve via gunicorn...")
