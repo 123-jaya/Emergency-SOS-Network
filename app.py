@@ -108,9 +108,7 @@ html_template = '''
                 <option>Flood</option>
                 <option>Earthquake</option>
                 <option>Accident</option>
-                <option>Weather</option>
-                <option>Gas Leak</option>
-                <option>Others</option>
+                <option>Other</option>
             </select>
             <input name="location" placeholder="Enter City or Place" required>
             <button type="submit">🚨 Trigger Emergency</button>
@@ -151,9 +149,9 @@ html_template = '''
         <p>🚑 Ambulance: 102</p>
         <p>🚓 Police: 100</p>
         <p>🌊 Flood Helpline: 1070</p>
-        <p>⚡ Electric: 1912</p>
-        <p>🔥 Gas Leak: 1800-22-0500</p>
-        <p>🚨 Disaster Relief: 1077</p>
+        <p>🚨 Disaster Relief: 108</p>
+        <p>🔒 Police Emergency: 100</p>
+        <p>🏥 Hospitals: 104</p>
     </div>
 </div>
 </body>
@@ -224,4 +222,4 @@ def open_browser():
 
 if __name__ == '__main__':
     save_map()
-    print("app ready to serve via gunicorn...")
+    print("app ready to serve via gunicorn..")
