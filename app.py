@@ -14,7 +14,6 @@ geolocator = Nominatim(user_agent="sos_app")
 
 emergencies = []
 
-# HTML Template embedded in app.py
 html_template = '''
 <!DOCTYPE html>
 <html>
@@ -25,7 +24,7 @@ html_template = '''
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('data:image/jpeg;base64,{{ bg_image }}') no-repeat center center fixed;
+                        url('/static/bg.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
             animation: fadeIn 1.5s ease-in-out;
@@ -109,7 +108,9 @@ html_template = '''
                 <option>Flood</option>
                 <option>Earthquake</option>
                 <option>Accident</option>
-                <option>Other</option>
+                <option>Weather</option>
+                <option>Gas Leak</option>
+                <option>Others</option>
             </select>
             <input name="location" placeholder="Enter City or Place" required>
             <button type="submit">🚨 Trigger Emergency</button>
@@ -137,7 +138,7 @@ html_template = '''
     {% endif %}
 
     <h2>🗺️ Emergency Locations Map</h2>
-    <iframe src="{{ map_url }}" frameborder="0"></iframe>
+    <iframe src="/map"></iframe>
 
     {% if chart %}
     <h2>📊 Emergency Types Distribution</h2>
@@ -150,8 +151,9 @@ html_template = '''
         <p>🚑 Ambulance: 102</p>
         <p>🚓 Police: 100</p>
         <p>🌊 Flood Helpline: 1070</p>
-        <p>🌍 Earthquake Helpline: 108</p>
-        <p>💥 Accident Helpline: 103</p>
+        <p>⚡ Electric: 1912</p>
+        <p>🔥 Gas Leak: 1800-22-0500</p>
+        <p>🚨 Disaster Relief: 1077</p>
     </div>
 </div>
 </body>
@@ -167,12 +169,8 @@ def save_map():
             popup=f"{e['type']} at {e['location']}",
             icon=folium.Icon(color="red" if e["type"] == "Fire" else "blue")
         ).add_to(cluster)
-    
-    # Save the map as an HTML file in memory
-    map_html = io.BytesIO()
-    m.save(map_html)
-    map_html.seek(0)
-    return base64.b64encode(map_html.read()).decode('utf-8')
+    os.makedirs("templates", exist_ok=True)
+    m.save("templates/map.html")
 
 def generate_chart():
     type_count = {}
@@ -209,8 +207,11 @@ def index():
             message = f"❌ Location '{location}' not found. Try again."
 
     chart = generate_chart()
-    map_url = f"data:text/html;base64,{save_map()}"
-    return render_template_string(html_template, emergencies=emergencies, chart=chart, message=message, map_url=map_url, bg_image="")
+    return render_template_string(html_template, emergencies=emergencies, chart=chart, message=message)
+
+@app.route('/map')
+def map_view():
+    return open("templates/map.html").read()
 
 @app.route('/clear', methods=['POST'])
 def clear():
@@ -223,4 +224,4 @@ def open_browser():
 
 if __name__ == '__main__':
     save_map()
-    print("app ready to serve via gunicorn..")
+    print("app ready to serve via gunicorn...")
