@@ -1,84 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SOS Rescue Map</title>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-    <style>
-        #map {
-            height: 90vh;
-            width: 100%;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-        }
-
-        #controls {
-            padding: 10px;
-            background-color: #f5f5f5;
-        }
-
-        select {
-            padding: 6px 10px;
-            font-size: 16px;
-        }
-    </style>
+    <title>SOS Emergency Map</title>
 </head>
 <body>
+    <h1>SOS Emergency Trigger</h1>
 
-<div id="controls">
-    <label for="city">Choose a city: </label>
-    <select id="city" onchange="updateMap(this.value)">
-        <option value="">-- Select City --</option>
-        <option value="Delhi">Delhi</option>
-        <option value="Mumbai">Mumbai</option>
-        <option value="Bengaluru">Bengaluru</option>
-        <option value="Kolkata">Kolkata</option>
-        <option value="Chennai">Chennai</option>
-    </select>
-</div>
+    <!-- Emergency Form -->
+    <form method="POST">
+        <label for="emergency_type">Emergency Type:</label>
+        <select name="emergency_type" required>
+            <option value="Fire">Fire</option>
+            <option value="Accident">Accident</option>
+            <option value="Medical">Medical</option>
+            <option value="Flood">Flood</option>
+        </select><br><br>
+        
+        <label for="location">Location:</label>
+        <input type="text" name="location" required><br><br>
+        
+        <button type="submit">Trigger Emergency</button>
+    </form>
 
-<div id="map"></div>
+    <!-- Message after form submission -->
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Pie chart of emergencies -->
+    {% if chart %}
+    <h3>Emergency Type Distribution</h3>
+    <img src="data:image/png;base64,{{ chart }}" alt="Emergency Distribution Chart">
+    {% endif %}
 
-<script>
-    let map = L.map('map').setView([20.5937, 78.9629], 5); // Default center - India
-    let cityMarker = null;
+    <!-- Display the map directly -->
+    <h3>Emergency Map</h3>
+    <iframe src="/static/map.html" width="100%" height="600px"></iframe>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+    <!-- List of all emergencies -->
+    <h3>Emergency List</h3>
+    <ul>
+        {% for emergency in emergencies %}
+        <li>{{ emergency['type'] }} at {{ emergency['location'] }} ({{ emergency['lat'] }}, {{ emergency['lon'] }})</li>
+        {% endfor %}
+    </ul>
 
-    function updateMap(city) {
-        if (!city) return;
-
-        fetch(`/get_coordinates?city=${city}`)
-            .then(res => res.json())
-            .then(data => {
-                const { lat, lon } = data;
-                if (lat && lon) {
-                    map.setView([lat, lon], 12);
-
-                    if (cityMarker) {
-                        cityMarker.setLatLng([lat, lon]);
-                    } else {
-                        cityMarker = L.marker([lat, lon]).addTo(map);
-                    }
-                }
-            })
-            .catch(err => {
-                console.error('Failed to update map:', err);
-            });
-    }
-</script>
-
+    <!-- Clear all emergencies -->
+    <form action="/clear" method="POST">
+        <button type="submit">Clear All Emergencies</button>
+    </form>
 </body>
 </html>
