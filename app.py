@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template_string, request, redirect
 import folium
 from folium.plugins import MarkerCluster
 from geopy.geocoders import Nominatim
@@ -6,13 +6,158 @@ import io
 import base64
 import matplotlib.pyplot as plt
 import os
+import webbrowser
+import threading
 
 app = Flask(__name__)
 geolocator = Nominatim(user_agent="sos_app")
 
 emergencies = []
 
-# Function to save the map with markers
+# HTML Template embedded in app.py
+html_template = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SOS Rescue Network</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('data:image/jpeg;base64,{{ bg_image }}') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .container {
+            background-color: rgba(0,0,0,0.8);
+            padding: 20px;
+            margin: 40px auto;
+            border-radius: 12px;
+            max-width: 900px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        iframe {
+            width: 100%;
+            height: 450px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 0 12px rgba(0,0,0,0.3);
+        }
+        img {
+            display: block;
+            margin: 15px auto;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        .form-section, .message, .history, .contacts {
+            text-align: center;
+            margin-top: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 15px;
+            margin: 5px;
+            border-radius: 6px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+            background-color: #2ecc71;
+            color: black;
+        }
+        .clear-button {
+            background-color: crimson;
+            color: white;
+            margin-top: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 5px auto;
+            padding: 10px;
+            border-radius: 6px;
+            max-width: 600px;
+            transition: background-color 0.2s ease;
+        }
+        li:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🌐 SOS Rescue Network</h1>
+
+    <div class="form-section">
+        <form method="POST" action="/">
+            <select name="emergency_type">
+                <option>Medical</option>
+                <option>Fire</option>
+                <option>Flood</option>
+                <option>Earthquake</option>
+                <option>Accident</option>
+                <option>Other</option>
+            </select>
+            <input name="location" placeholder="Enter City or Place" required>
+            <button type="submit">🚨 Trigger Emergency</button>
+        </form>
+    </div>
+
+    {% if message %}
+    <div class="message">
+        <p><strong>{{ message }}</strong></p>
+    </div>
+    {% endif %}
+
+    {% if emergencies %}
+    <div class="history">
+        <h2>📍 Emergency Reports</h2>
+        <ul>
+        {% for e in emergencies %}
+            <li>🔴 {{ e.type }} at {{ e.location }} (Lat: {{ e.lat }}, Lon: {{ e.lon }})</li>
+        {% endfor %}
+        </ul>
+        <form method="POST" action="/clear">
+            <button class="clear-button">🧹 Clear Notifications</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <h2>🗺️ Emergency Locations Map</h2>
+    <iframe src="{{ map_url }}" frameborder="0"></iframe>
+
+    {% if chart %}
+    <h2>📊 Emergency Types Distribution</h2>
+    <img src="data:image/png;base64,{{ chart }}" alt="Pie Chart"/>
+    {% endif %}
+
+    <div class="contacts">
+        <h2>📞 Emergency Contacts</h2>
+        <p>🚒 Fire: 101</p>
+        <p>🚑 Ambulance: 102</p>
+        <p>🚓 Police: 100</p>
+        <p>🌊 Flood Helpline: 1070</p>
+        <p>🌍 Earthquake Helpline: 108</p>
+        <p>💥 Accident Helpline: 103</p>
+    </div>
+</div>
+</body>
+</html>
+'''
+
 def save_map():
     m = folium.Map(location=[20.5937, 78.9629], zoom_start=5)
     cluster = MarkerCluster().add_to(m)
@@ -22,10 +167,13 @@ def save_map():
             popup=f"{e['type']} at {e['location']}",
             icon=folium.Icon(color="red" if e["type"] == "Fire" else "blue")
         ).add_to(cluster)
-    os.makedirs("templates", exist_ok=True)
-    m.save("templates/map.html")
+    
+    # Save the map as an HTML file in memory
+    map_html = io.BytesIO()
+    m.save(map_html)
+    map_html.seek(0)
+    return base64.b64encode(map_html.read()).decode('utf-8')
 
-# Function to generate emergency type chart
 def generate_chart():
     type_count = {}
     for e in emergencies:
@@ -41,7 +189,6 @@ def generate_chart():
     buf.seek(0)
     return base64.b64encode(buf.read()).decode('utf-8')
 
-# Home route
 @app.route('/', methods=['GET', 'POST'])
 def index():
     message = None
@@ -62,22 +209,18 @@ def index():
             message = f"❌ Location '{location}' not found. Try again."
 
     chart = generate_chart()
-    return render_template("index.html", emergencies=emergencies, chart=chart, message=message)
+    map_url = f"data:text/html;base64,{save_map()}"
+    return render_template_string(html_template, emergencies=emergencies, chart=chart, message=message, map_url=map_url, bg_image="")
 
-# Map view route
-@app.route('/map')
-def map_view():
-    return render_template("map.html")
-
-# Clear emergencies route
 @app.route('/clear', methods=['POST'])
 def clear():
     emergencies.clear()
     save_map()
     return redirect("/")
 
-# Run the application
+def open_browser():
+    webbrowser.open("http://127.0.0.1:5000")
+
 if __name__ == '__main__':
     save_map()
     print("app ready to serve via gunicorn..")
-    app.run(debug=True)
