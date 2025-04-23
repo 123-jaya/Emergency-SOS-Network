@@ -27,6 +27,9 @@ Visualization	Real-time map & notifications on the console
 * Instant Notifications: Alerts are sent immediately when new emergencies are reported, keeping responders in the loop.
 * Interactive Dashboard: An easy-to-read interface shows all current emergencies and updates so that you can quickly make decisions.
 
+Have a look , 
+https://www.canva.com/design/DAGlKqytX48/Af21JXPEJibaodV8XWPe7A/edit?utm_content=DAGlKqytX48&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 📊 Example Output
 
 [EmergencyMapAgent] 🚨 Emergency reported at coordinates [12.9716, 77.5946].
