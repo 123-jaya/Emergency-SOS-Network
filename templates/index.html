@@ -175,19 +175,21 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
-    // Initialize map
-    var map = L.map('map').setView([20.5937, 78.9629], 5); // Center map on India
+    // Initialize the map and set view to India with a default zoom level
+    var map = L.map('map').setView([20.5937, 78.9629], 5); 
 
-    // Set up the tile layer for map background
+    // Add the tile layer to the map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Add markers for each reported emergency (for demonstration purposes)
+    // Add markers for each emergency with latitude and longitude
     {% for e in emergencies %}
-    L.marker([{{ e.lat }}, {{ e.lon }}]).addTo(map)
-        .bindPopup('<b>{{ e.type }}</b><br>{{ e.location }}')
-        .openPopup();
+    if({{ e.lat }} && {{ e.lon }}) {
+        L.marker([{{ e.lat }}, {{ e.lon }}]).addTo(map)
+            .bindPopup('<b>{{ e.type }}</b><br>{{ e.location }}')
+            .openPopup();
+    }
     {% endfor %}
 </script>
 
