@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOS Emergency Network</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -83,6 +84,10 @@
             font-size: 14px;
             color: #555;
         }
+        #map {
+            height: 400px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -159,11 +164,32 @@
     <form method="POST" action="/clear">
         <button type="submit">Clear All Emergencies</button>
     </form>
+
+    <!-- Map Container -->
+    <div id="map"></div>
 </div>
 
 <div class="footer">
     <p>&copy; 2025 SOS Emergency Network</p>
 </div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Initialize map
+    var map = L.map('map').setView([20.5937, 78.9629], 5); // Center map on India
+
+    // Set up the tile layer for map background
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add markers for each reported emergency (for demonstration purposes)
+    {% for e in emergencies %}
+    L.marker([{{ e.lat }}, {{ e.lon }}]).addTo(map)
+        .bindPopup('<b>{{ e.type }}</b><br>{{ e.location }}')
+        .openPopup();
+    {% endfor %}
+</script>
 
 </body>
 </html>
