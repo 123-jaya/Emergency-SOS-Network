@@ -7,14 +7,12 @@ import base64
 import matplotlib.pyplot as plt
 import os
 import webbrowser
-import threading
 
 app = Flask(__name__)
 geolocator = Nominatim(user_agent="sos_app")
 
 emergencies = []
 
-# Define the HTML template with inline CSS and image handling
 html_template = '''
 <!DOCTYPE html>
 <html>
@@ -25,7 +23,7 @@ html_template = '''
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('data:image/jpeg;base64,{{ bg_image }}') no-repeat center center fixed;
+                        url('/static/bg.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
             animation: fadeIn 1.5s ease-in-out;
@@ -150,15 +148,15 @@ html_template = '''
         <p>🚑 Ambulance: 102</p>
         <p>🚓 Police: 100</p>
         <p>🌊 Flood Helpline: 1070</p>
-        <p>🚨 Road Accidents: 1090</p>
-        <p>🛑 Earthquake Helpline: 108</p>
-        <p>👩‍⚕️ Poison Control: 1066</p>
+        <p>⚠️ Earthquake Helpline: 108</p>
+        <p>🚗 Accident Helpline: 109</p>
     </div>
 </div>
 </body>
 </html>
 '''
 
+# Initialize emergency data
 def save_map():
     m = folium.Map(location=[20.5937, 78.9629], zoom_start=5)
     cluster = MarkerCluster().add_to(m)
@@ -171,6 +169,7 @@ def save_map():
     os.makedirs("templates", exist_ok=True)
     m.save("templates/map.html")
 
+# Generate chart for emergency types
 def generate_chart():
     type_count = {}
     for e in emergencies:
@@ -185,10 +184,6 @@ def generate_chart():
     plt.savefig(buf, format='png', bbox_inches="tight")
     buf.seek(0)
     return base64.b64encode(buf.read()).decode('utf-8')
-
-def get_bg_image():
-    with open('bg.jpg', 'rb') as f:
-        return base64.b64encode(f.read()).decode('utf-8')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -210,8 +205,7 @@ def index():
             message = f"❌ Location '{location}' not found. Try again."
 
     chart = generate_chart()
-    bg_image = get_bg_image()
-    return render_template_string(html_template, emergencies=emergencies, chart=chart, message=message, bg_image=bg_image)
+    return render_template_string(html_template, emergencies=emergencies, chart=chart, message=message)
 
 @app.route('/map')
 def map_view():
@@ -228,6 +222,4 @@ def open_browser():
 
 if __name__ == '__main__':
     save_map()
-    print("App ready to serve via gunicorn...")
-    open_browser()
     app.run(debug=True)
