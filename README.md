@@ -1,3 +1,5 @@
+![](static/banner.jpg)
+
 🚨 Emergency SOS Network
 
 Empowering communities with real-time disaster response through AI-driven prioritization and interactive mapping.
