@@ -1,47 +1,152 @@
-SOS Rescue Network 🚑🗺️
+🚨 Emergency SOS Network
 
-In times of disaster, every second counts. The SOS Rescue Network is here to help by using smart technology to track emergencies, prioritize urgent cases, and make sure help gets to the right places fast. Whether it's a fire, medical emergency, or natural disaster, this system keeps responders informed and ready to act.
+Empowering communities with real-time disaster response through AI-driven prioritization and interactive mapping.
 
-🚀 What Makes This Project Stand Out?
-* Live Emergency Map: See emergencies as they happen in real-time on a map.
-* AI-Powered Priority System: The system uses AI to figure out which emergencies need attention first, ensuring resources are used wisely.
-* Instant Alerts & Notifications: Get notified the moment an emergency is reported.
-* Interactive Dashboard: A simple, easy-to-use interface that helps you manage emergencies and track updates.
-* Smart Resource Management: The AI helps assign resources quickly and efficiently.
+
+
+📌 Problem Statement
+
+Problem Statement 12 – Redesign Crisis Logistics and Relief Distribution
+
+
+
+🎯 Objective
+
+In disaster situations, timely and efficient response is crucial. The Emergency SOS Network addresses this by providing a platform that:
+
+* Tracks emergencies in real-time using geolocation.
+  
+* Prioritizes incidents based on severity through AI analysis.
+ 
+* Facilitates rapid response by visualizing data on an interactive map.
+ 
+* This system serves first responders, emergency services, and affected communities, ensuring that critical situations receive immediate attention.
+
+
+🧠 Team & Approach
+
+Solohacker
+
+Name : JAYADIXITHA S P
+
+
+Approach:
+
+* Problem Selection: Chose this challenge to enhance disaster response efficiency.
+
+* Challenges Addressed:
+
+  -> Integrating real-time data visualization.
+
+   -> Implementing AI for incident prioritization.
+
+   -> Ensuring user-friendly interface for diverse users.
+
+* Development Journey:
+
+  -> Transitioned from a multi-file setup to a streamlined single-file Flask application.
+
+  -> Iteratively tested features to ensure reliability and responsiveness.
 
 🛠️ Tech Stack
 
-Component	Used Technology
-Programming	Python
-Web Framework	Flask
-Mapping	Google Maps API
-Speech Input	Speech Recognition for voice commands
-Database	SQLite (for storing emergency data)
-Running	 Python script
-Visualization	Real-time map & notifications on the console
+Frontend: HTML, CSS, JavaScript, Leaflet.js
 
-🧪 How It Works
-* Live Emergency Tracking: The map shows all ongoing emergencies in real-time, along with the locations of responders.
-* AI for Priority Tagging: The system automatically sorts emergencies by severity, so the most urgent cases are addressed first.
-* Voice Reporting: You can report emergencies using voice commands, making it easier when you can't type.
-* Instant Notifications: Alerts are sent immediately when new emergencies are reported, keeping responders in the loop.
-* Interactive Dashboard: An easy-to-read interface shows all current emergencies and updates so that you can quickly make decisions.
+Backend: Python, Flask
 
-Have a look , 
-https://www.canva.com/design/DAGlKqytX48/Af21JXPEJibaodV8XWPe7A/edit?utm_content=DAGlKqytX48&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+Database: SQLite
 
-📊 Example Output
+APIs:
 
-[EmergencyMapAgent] 🚨 Emergency reported at coordinates [12.9716, 77.5946].
+* OpenStreetMap for mapping.
 
-[PriorityTaggingAgent] 🔥 Critical: Fire reported at location X.
+* Google Speech Recognition for voice input.
 
-[AlertAgent] ⚠️ New alert! Sending help to location X.
+* GeoAPI for location services.
 
-[DashboardAgent] 🗺️ Displaying live emergency updates on the map.
+Hosting: Render 
 
-[NotificationAgent] 📲 Emergency alert: Immediate response needed for fire at location X.
+✨ Key Features
 
-📂 Dataset
-This project doesn’t rely on external datasets. Instead, it generates simulated emergency data, like location and incident type, for demo purposes.
+✅ Live Emergency Map: Visual representation of ongoing incidents.
 
+✅ AI-Powered Prioritization: Automated assessment of incident severity.
+
+✅ Voice Input: Report emergencies hands-free.
+
+✅ Interactive Dashboard: User-friendly interface for monitoring and response.
+
+
+📽️ Demo & Deliverables
+
+Demo Video: https://vimeo.com/1078024820?share=copy
+
+Pitch Deck: [Insert Link]
+
+✅ Tasks & Bonus Checklist
+
+✅ Followed required social channels and submitted the form.
+
+✅ Completed Bonus Task 1 – Shared badges and submitted the form.
+
+✅ Completed Bonus Task 2 – Signed up for Sprint.dev and submitted the form.
+
+
+🧪 How to Run the Project
+
+Requirements:
+
+* Python 3.9+
+
+* Internet connection for API access
+
+Local setup:
+
+* bash
+
+* Copy
+
+* Edit
+  
+# Clone the repository
+git clone https://github.com/123-jaya/Emergency-SOS-Network.git
+
+# Navigate to the project directory
+cd Emergency-SOS-Network
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python app.py
+
+
+🧬 Future Scope
+
+
+📱 Develop a mobile application for on-the-go reporting.
+
+🌐 Integrate multilingual support for broader accessibility.
+
+🔒 Enhance security features for data protection.
+
+🤖 Incorporate machine learning for predictive analysis.
+
+📎 Resources / Credits
+
+APIs: 
+
+OpenStreetMap, GeoAPI
+
+Libraries:
+
+Flask, SQLite, Leaflet.js
+
+Acknowledgements: 
+
+Gratitude to HACKHAZARDS'25 mentors and the developer community for their support.
+
+🏁 Final Words
+
+Participating in HACKHAZARDS'25 has been an enlightening experience. From conceptualization to execution, our team collaborated to create a solution aimed at making a tangible difference in emergency response. 
+We're proud of what we've built and excited about its potential impact.
